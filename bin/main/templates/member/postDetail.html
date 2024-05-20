@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout}">
+
+<head>
+    <title>쪽지 상세 내용</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <h3>쪽지 상세 내용</h3><h5>수신시각: [[${post.regTime}]]</h5>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">제목: [[${post.postSubject}]]</h4>
+                <p class="card-text">내용: [[${post.postContent}]]</p>
+                <p class="card-text">보낸이: [[${post.senderEmail}]]</p>
+                
+            </div>
+        </div>
+        <a th:href="'/reply?reciever=' + ${post.senderEmail}">답장하기</a>
+        <a th:href="'/deleteOne?postId=' + ${post.postId}">삭제하기</a>
+    </div>
+</body>
+
+</html>

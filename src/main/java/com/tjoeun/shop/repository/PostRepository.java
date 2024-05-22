@@ -10,7 +10,7 @@ import com.tjoeun.shop.entity.Post;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 	
-	List<Post> findAllByReciever(String email);
+	List<Post> findAllByRecieverOrderByRegTimeDesc(String email);
 	
 	List<Post> findAllBySender(Member member);
 

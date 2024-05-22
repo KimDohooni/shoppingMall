@@ -1,6 +1,7 @@
 package com.tjoeun.shop.controller;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -75,19 +76,20 @@ public class PostController {
 		String Email = principal.getName();
 		
 		List<PostDto> postList = postService.getPostList(Email);
+		
 		log.info(">>>>>>>>>>>>>>>> postList : " + postList);
 		 if (postList.isEmpty()) {
 		        postList = null;
 		    }
 		model.addAttribute("postList", postList);
 		
-		
-		
 		return "/member/postList";
 	}
+	
+	
 	@GetMapping("/reply")
-	public String reply(PostDto postDto, Principal principal, @RequestParam("reciever") String reciever) {
-		postDto.setRecieverEmail(reciever);
+	public String reply(PostDto postDto, Principal principal, @RequestParam("sender") String sender) {
+		postDto.setRecieverEmail(sender);
 		postDto.setSenderEmail(principal.getName());
 		//postDto.setRegTime(regTime);
 		/*if(principal != null && memberRepository.findByEmail(postDto.getRecieverEmail()) != null) {			

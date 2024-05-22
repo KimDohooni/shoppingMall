@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,6 +55,10 @@ public class QnaService {
 	
 	public void deleteById(Long id) {
 		qnaRepository.deleteById(id);
+	}
+	
+	public void updateQnaBoard(@Param("qnaRequestDto") QnaRequestDto qnaRequestDto, @Param("id") Long id) {
+		qnaRepository.updateQnaBoard(qnaRequestDto, id);
 	}
 	
 }

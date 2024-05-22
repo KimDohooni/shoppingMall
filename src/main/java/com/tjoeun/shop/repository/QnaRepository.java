@@ -20,6 +20,14 @@ public interface QnaRepository extends JpaRepository<Qna, Long>{
 	@Query(value = UPDATE_QNA_READ_CNT_INC)
 	public int updateQnaReadCntInc(@Param("id") Long id);
 	
-	QnaRequestDto findAllById(Long id);
+	static final String UPDATE_QNA_BOARD = "UPDATE Qna q "
+      + "SET q.content = :#{#qnaRequestDto.content}, "
+      + "q.title = :#{#qnaRequestDto.title} "
+      + "WHERE q.id = :id";
+
+	@Transactional
+	@Modifying
+	@Query(value = UPDATE_QNA_BOARD)
+	public void updateQnaBoard(@Param("qnaRequestDto") QnaRequestDto qnaRequestDto, @Param("id") Long id);
 	
 }

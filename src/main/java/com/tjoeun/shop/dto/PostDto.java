@@ -26,11 +26,11 @@ public class PostDto{
 	private String postContent;
 	
 	
+	private String senderEmail;
+	
 	@NotBlank(message="받는 분을 입력하세요")
 	private String recieverEmail;
-	
-	
-	private String senderEmail;
+		
 	
 	private LocalDateTime regTime;
 	 

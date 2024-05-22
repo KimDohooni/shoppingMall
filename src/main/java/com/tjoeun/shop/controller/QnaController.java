@@ -12,7 +12,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tjoeun.shop.dto.QnaRequestDto;
 import com.tjoeun.shop.dto.QnaResponseDto;
-import com.tjoeun.shop.repository.QnaRepository;
 import com.tjoeun.shop.service.QnaService;
 
 import jakarta.validation.Valid;
@@ -23,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 public class QnaController {
 
 	private final QnaService qnaService;
-	private final QnaRepository qnaRepository;
 	
 	@GetMapping("/qna/list")
 	public String getQnaListPage(@RequestParam(required = false, defaultValue = "0") Integer page,
@@ -50,6 +48,32 @@ public class QnaController {
 	}
 	
 	
+	@PostMapping("/qna/write/action")
+	public String qnaWriteAction(@Valid QnaRequestDto qnaRequestDto, @RequestParam("registerId")String registerId,
+																	BindingResult result, Model model) throws Exception{
+  try {
+  		
+  		qnaRequestDto.setRegisterId(registerId);
+      qnaService.save(qnaRequestDto);
+  } catch (Exception e){
+      model.addAttribute("errorMessage", "등록 중 오류가 발생함 !!!");
+      return "qna/write";
+  }  
+		return "redirect:/qna/list";
+	}
+	
+	
+	@PostMapping("/qna/write/edit")
+	public String qnaWriteEdit(@Valid QnaRequestDto qnaRequestDto, @RequestParam("registerId") String registerId,
+																	BindingResult result, Model model) throws Exception{
+  try {
+      qnaService.updateQnaBoard(qnaRequestDto, qnaRequestDto.getId());
+  } catch (Exception e){
+      model.addAttribute("errorMessage", "등록 중 오류가 발생함 !!!");
+      return "qna/write";
+  }  
+		return "redirect:/qna/list";
+	}
 	
 	@GetMapping("/qna/view")
 	public String getQnaViewPage(@RequestParam Long id,
@@ -67,38 +91,6 @@ public class QnaController {
 		return "qna/view";
 	}
 	
-	
-	@PostMapping("/qna/write/action")
-	public String qnaWriteAction(@Valid QnaRequestDto qnaRequestDto, @RequestParam("registerId")String registerId,
-																	BindingResult result, Model model) throws Exception{
-  try {
-  		
-  		qnaRequestDto.setRegisterId(registerId);
-      qnaService.save(qnaRequestDto);
-  } catch (Exception e){
-      model.addAttribute("errorMessage", "등록 중 오류가 발생함 !!!");
-      return "qna/write";
-  }  
-		return "redirect:/qna/list";
-	}
-	
-	
-	@PostMapping("/qna/write/edit")
-	public String qnaWriteEdit(@Valid QnaRequestDto qnaRequestDto, @RequestParam("registerId")String registerId,
-																	BindingResult result, Model model) throws Exception{
-  try {
-  		qnaService.deleteById(qnaRequestDto.getId());
-  		qnaRequestDto.setRegisterId(registerId);
-      qnaService.save(qnaRequestDto);
-  } catch (Exception e){
-      model.addAttribute("errorMessage", "등록 중 오류가 발생함 !!!");
-      return "qna/write";
-  }  
-		return "redirect:/qna/list";
-	}
-	
-	
-	
 	@PostMapping("/qna/view/delete")
 	public String qnaViewDeleteAction(Principal principal, @RequestParam Long id, RedirectAttributes redirectAttributes) throws Exception {
 	    String currentUserId = principal.getName(); 
@@ -109,7 +101,7 @@ public class QnaController {
 	        qnaService.deleteById(id);
 	        return "redirect:/qna/list";
 	    } else {
-	        redirectAttributes.addFlashAttribute("error", "사용자의 게시물만 삭제할수 있습니다");
+	    	redirectAttributes.addFlashAttribute("error", "사용자의 게시물만 삭제할 수 있습니다");
 	        return "redirect:/qna/list";
 	    }
 	}

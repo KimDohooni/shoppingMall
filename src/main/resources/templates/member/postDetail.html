@@ -16,7 +16,7 @@
                 
             </div>
         </div>
-        <a th:href="'/reply?reciever=' + ${post.senderEmail}">답장하기</a>
+        <a th:href="'/reply?sender=' + ${post.senderEmail}">답장하기</a>
         <a th:href="'/deleteOne?postId=' + ${post.postId}">삭제하기</a>
     </div>
 </body>

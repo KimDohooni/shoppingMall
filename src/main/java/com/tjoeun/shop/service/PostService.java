@@ -3,6 +3,7 @@ package com.tjoeun.shop.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.tjoeun.shop.dto.PostDto;
@@ -37,8 +38,13 @@ public class PostService {
 			}
 	
 	public List<PostDto> getPostList(String email){
-		List<Post> postList = postRepository.findAllByReciever(email);
+		List<Post> postList = postRepository.findAllByRecieverOrderByRegTimeDesc(email);
 		List<PostDto> postDtoList = new ArrayList<>();
+		
+		int idx = 6;
+		for(int i = idx; i<postList.size(); i++) {
+			postRepository.delete(postList.get(i));
+		}
 		
 		for(Post post : postList) {
 			postDtoList.add(PostDto.toDto(post));

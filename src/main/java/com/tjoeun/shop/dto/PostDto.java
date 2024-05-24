@@ -25,12 +25,13 @@ public class PostDto{
 	@NotBlank(message="쪽지 내용을 적으세요")
 	private String postContent;
 	
-	
 	private String senderEmail;
-	
 	@NotBlank(message="받는 분을 입력하세요")
 	private String recieverEmail;
-		
+	
+	private Enum postStatus;
+	
+	
 	
 	private LocalDateTime regTime;
 	 
@@ -48,6 +49,7 @@ public class PostDto{
 				post.getPostContent(),
 				post.getSender().getEmail(),
 				post.getReciever(),
+				post.getPostStatus(),
 				post.getRegTime()
 				);
 	}	

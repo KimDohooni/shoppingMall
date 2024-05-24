@@ -12,7 +12,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	
 	List<Post> findAllByRecieverOrderByRegTimeDesc(String email);
 	
-	List<Post> findAllBySender(Member member);
+	List<Post> findAllBySenderOrderByRegTimeDesc(Member member);
 
 	List<Post> findByReciever(String user);
 

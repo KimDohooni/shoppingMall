@@ -1,82 +1,133 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layouts/layout}">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
 
 <th:block layout:fragment="script">
 
-	<script th:inline="javascript">
+    <script th:inline="javascript">
         $(document).ready(function(){
             let errorMessage = [[${errorMessage}]];
             if(errorMessage != null){
                 alert(errorMessage);
             }
         });
+        
+        <!--
+        function showReceivedPosts() {
+            $.ajax({
+                type: "POST",
+                url: "/receivedPosts",
+                success: function(data) {
+                    var receivedPosts = "<ul>";
+                    for (var i = 0; i < data.length; i++) {
+                    	receivedPosts += "<li>" + data[i].postSubject + "</li>";
+                    }
+                    receivedPosts += "</ul>";
+
+                    $("#receivedPostsContainer").html(receivedPosts);
+                },
+
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        function showSentPosts() {
+            $.ajax({
+                type: "POST",
+                url: "/sentPosts",
+                success: function(data) {
+                    // 보낸 쪽지함을 보여주는 코드 작성
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+    
+	-->
     </script>
 
 </th:block>
 
 <th:block layout:fragment="css">
-	<style>
-.input-group {
-	margin-bottom: 15px;
-}
-
-.img-div {
-	margin-bottom: 10x;
-}
-
-.error {
-	color: #bd2130;
-	font-size: smaller;
-	font-weight: bold;
-}
-</style>
+  <style>
+    .input-group { margin-bottom: 15px; }
+    .img-div{ margin-bottom: 10x; }
+    .error{ color:#bd2130; font-size:smaller; font-weight:bold; }   
+  </style>
 </th:block>
 
 <div layout:fragment="content">
-	<h3>쪽 지 함</h3>
-	<h4>
-		<a th:href="@{/clearPost}" th:if="${postList}">쪽지함 비우기</a>
-	</h4>
-	<br>
+
+    <h3>쪽 지 함</h3>    (쪽지는 최대 5개까지만 보관됩니다)
+    <button>
+		<a style="color: rgb(0, 0, 0); font-weight: bold;" th:href="@{/post}">쪽지쓰기</a>
+	</button>
+                    
+                
+    <h4><a th:href="@{/clearPost}" th:if="${postList}">쪽지함 비우기</a></h4><br>
 	<div class="row" th:unless="${postList}">
 		<p>쪽지함이 비었습니다.</p>
 	</div>
-	<button sec:authorize="isAuthenticated()">
-		<a style="color: rgb(0, 0, 0); font-weight: bold;" th:href="@{/post}">쪽지쓰기</a>
-	</button>
-
-	<br>
-	<br>
-	<div class="row">
-
-		<th:block th:each="post : ${postList}"> 
-			<div class="col-md-4 margin">
-				<div class="card">
-
-					<div class="card-body">
-						<h4 class="card-title">
-							<a th:href="'/detail?postId=' + ${post.postId}">제목 :
-								[[${post.postSubject}]]</a>
-						</h4>
-						내용 :
-						<p class="card-text"
-							th:text="${#strings.length(post.postContent) > 10 ? #strings.substring(post.postContent, 0, 10) + '...' : post.postContent}"></p>
-
-						<h3 class="card-text">보낸이 : [[${post.senderEmail}]]</h3>
-						<a th:href="'/reply?sender=' + ${post.senderEmail}"><br>(보낸사람에게 답장하기)</a>
-						<h4 class="card-text">수신시각 : [[${post.regTime}]]</h4>
-					</div>
-				</div>
-			</div>
-
-		</th:block>
-
-	</div>
-	<input type="hidden" th:name="${_csrf.parameterName}"
-		th:value="${_csrf.token}">
-
+	
+	<!--
+	<button onclick="showReceivedPosts()">받은 쪽지함</button>
+<button onclick="showSentPosts()">보낸 쪽지함</button>
+	  -->
+	  받은 쪽지	<br>
+	<div class="row">	
+        <th:block th:each="post : ${postList}">        
+            <div class="col-md-4 margin">
+                <div class="card">
+                   
+                        <div class="card-body">
+                        <div class="row" th:if="${post.postStatus eq 'NEW'}">
+							<p>new</p>
+						</div>
+                        <span th:if="${post.postStatus.name.equals('NEW')}" class="badge badge-primary mgb-15">
+                new
+            </span>
+                            <h3 class="card-text"><a th:href="'/detail?postId=' + 
+                            ${post.postId} +'& sender=' + ${post.senderEmail}">
+                            제목 : [[${post.postSubject}]]</a></h3>
+                            내용 : <p class="card-text" th:text="${#strings.length(post.postContent) > 10 
+                            ? #strings.substring(post.postContent, 0, 10) + '...' : post.postContent}"></p>
+                            
+                            <h3 class="card-text">보낸이 : [[${post.senderEmail}]] </h3>
+                            <a th:href="'/reply?sender=' + ${post.senderEmail}"><br>(보낸 사람에게 답장하기)</a>
+                            <h3 class="card-text">수신시각 : [[${post.regTime}]]</h3>
+                        </div>                    
+                </div>
+            </div>
+        </th:block>
+    </div>
+    <hr>
+    보낸쪽지<br>	(보낸쪽지도 최대 5개만 볼 수 있습니다)
+    <div class="row">	
+        <th:block th:each="post : ${postSendList}">        
+            <div class="col-md-4 margin">
+                <div class="card">
+                   
+                        <div class="card-body">
+                            <h3 class="card-text"><a th:href="'/detail?postId=' + 
+                            ${post.postId} +'& reciever=' + ${post.recieverEmail}">
+                            제목 : [[${post.postSubject}]]</a></h3>
+                            내용 : <p class="card-text" th:text="${#strings.length(post.postContent) > 10 
+                            ? #strings.substring(post.postContent, 0, 10) + '...' : post.postContent}"></p>
+                            
+                            <h3 class="card-text">받은이 : [[${post.recieverEmail}]] </h3>                            
+                            <h3 class="card-text">수신시각 : [[${post.regTime}]]</h3>
+                        </div>                    
+                </div>
+            </div>
+        </th:block>
+    </div>
+    
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        
 
 </div>
 

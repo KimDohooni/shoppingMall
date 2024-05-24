@@ -1,5 +1,7 @@
 package com.tjoeun.shop.entity;
 
+import java.time.LocalDateTime;
+
 import com.tjoeun.shop.constant.PostStatus;
 
 import jakarta.persistence.Column;
@@ -21,7 +23,7 @@ import lombok.Setter;
 @Setter
 @RequiredArgsConstructor
 public class Post extends BaseEntity {
-	/*public static MemberRepository memberRepository;*/
+	
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +43,4 @@ public class Post extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	private PostStatus postStatus;
-	
-	
-
 }
